@@ -685,6 +685,9 @@ Just some ascii bytes convertions.
 Apart from implementing the above said functions, I have also modified the placeholders in the source to be `@` for source and `^` for task func. They have no special meanings, choosing them is just because the symbols are not used anywhere else in the program.\
 Moreover, I forgot that it would run without the inputs for the first time, which panics my code when it defaults to is_prime for the task function. So I added `no`, a new default task function that does nothing.
 
+<details open>
+  <summary><b>Click to open/close the full one-step-away solve script</b></summary>
+
 ```c
 typedef unsigned long long uint64_t;
 typedef unsigned int uint;
@@ -972,6 +975,10 @@ int main() {
     return 0;
 }
 ```
+
+</details>
+
+<br>
 
 Now this should compile perfectly under `-nostdlib` and run correctly for the chal.
 
