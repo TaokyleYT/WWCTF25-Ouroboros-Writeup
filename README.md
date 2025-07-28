@@ -19,10 +19,10 @@ Is your code a true ouroboros?
 `nc chal.wwctf.com 6000`
 
 Attachments:\
-`chall.py` (Stored at `./chall.py`)\
-`Dockerfile` (Stored at `./Dockerfile`)\
-`nsjail.cfg` (Stored at `./nsjail.cfg`)\
-`wrapper.sh` (Stored at `./wrapper.sh`)
+[chall.py](./chall.py)\
+[Dockerfile](./Dockerfile)\
+[nsjail.cfg](./nsjail.cfg)\
+[wrapper.sh](./wrapper.sh)
 
 ## The Beginning
 
@@ -59,7 +59,7 @@ A - `-u` is just used to run the python script with unbuffered output, this ensu
 ## chall.py
 
 <details open>
-  <summary><b>Click to open/close the full chall.py code (also in ./chall.py)</b></summary>
+  <summary><b>Click to open/close the full chall.py code (also in attachment)</b></summary>
 
 ```python
 import os
@@ -296,31 +296,29 @@ There are 5 tasks in total, each task is a function that returns a tuple with 2 
 
 They are
 
-> reverse
+* reverse
 
-input a string consisting of 3 to 10 lowercase letters, output the reversed string.
+  * input a string consisting of 3 to 10 lowercase letters, output the reversed string.
 
-> sum
+* sum
 
-input 3 to 7 integers from 0 to 20 split with a space, output their sum
+  * input 3 to 7 integers from 0 to 20 split with a space, output their sum
 
-*special: the input are not just the integers, the first element is how many integers are there, the following are the integers*
+  * *special: the input are not just the integers, the first element is how many integers are there, the following are the integers*
 
-> is_prime
+* is_prime
 
-input an integer from 2 to 100, output whether it is a prime
+  * input an integer from 2 to 100, output whether it is a prime
 
-*special: the output need to be "True" or "False", not just 1 and 0*
+  * *special: the output need to be "True" or "False", not just 1 and 0*
 
-> fibonacci
+* fibonacci
 
-input an integer from 1 to 15, output the n-th fibonacci number, where n is the input
+  * input an integer from 1 to 15, output the n-th fibonacci number, where n is the input
 
-> caesar
+* caesar
 
-input a shift amount and a string consisting of 5 to 12 lowercase letters, output the caesar shifted cipher
-
-> ----------
+  * input a shift amount and a string consisting of 5 to 12 lowercase letters, output the caesar shifted cipher
 
 There is also a task distribute function `task()`, which will return a random task's name, and the input and expected output of that task.
 
@@ -453,19 +451,18 @@ The input for the code would be the input for the current task, newline, and the
 The output of the code should be the output for the current task, newline, and then the entire c code that would run on the next task.
 
 > Special i/o
-
-The first input that the code will receive would be just the task name for the next task, the current task input will be missing because technically that is a startup instead of a task
-
-The output c code for the last task should be identical to the original c code (aka the code you pasted into the chall.py)
-
-> ----------
+>
+> The first input that the code will receive would be just the task name for the next task, the current task input will be missing because technically that is a startup instead of a task
+>
+> The output c code for the last task should be identical to the original c code (aka the code you pasted into the chall.py)
 
 Then, if all 69 tasks are solved correctly, and the final output c code is identical to the original c code, it will print the flag.
 
 ## chall.py - checkpoint Q&A
 
-Q - Why does this Q&A section seems useless?\
-A - Because I haven't thought of any questions about this part.
+Q - What does ouroboros have to do with this chall?\
+A - Ouroboros is an ancient symbol depicting a snake biting it's own tail, just like a loop.\
+This chal requires your code to be like an ouroboros, it survives (do tasks), and then eat itself (prints an exact copy of itself out, with only necesserary changes)
 
 ## Initial ideas
 
@@ -477,7 +474,7 @@ Which means that we do not have access to stderr channel, so this is not an opti
 
 To be honest, writing a c program which solves the challenge is easier than whatever other approaches in extracting the flag, so I headed straight to craft the skeleton of the payload.
 
-### The payload
+### The skeleton
 
 ```c
 const char *source = "copy of the entire code";
@@ -505,13 +502,15 @@ int main() {
 
 ## Initial ideas - checkpoint Q&A
 
-Q - Why does this Q&A section seems useless?\
-A - Because I haven't thought of any questions about this part.
+Q - Did you use AI to craft the payload?\
+A - No :skull: me poor no money
 
-## -nostdlib
+## nostdlib
 
 While I was completing the skeleton code, I realized that we have to add 2 placeholders in the code instead of just the task function, because the source need to include itself, which includes itself, which..... and that would be a forever loop.\
 The fix is to also add a placeholder for the source, and fill the content with an escaped version of itself. For that I have implemented a function `print`
+
+Here is the first iteration of the code.
 
 ```c
 #include <stdio.h>
@@ -643,27 +642,26 @@ int main() {
 
 I have made a c program that would perfectly solve the challenge.... right?
 
-Wrong. It spited out some error. More specificly, `undefined reference to {function}`
+Wrong. It spitted out some error. More specifically, `undefined reference to {function}`
 
-It turns out that I've overlooked the `gcc` compile line in `chall.py`, as I only thought its going to compile the program. Turns out, the `-nostdlib` flag in the `gcc` command had messed up the program completely.
+It turns out that I've overlooked the `gcc` compile line in `chall.py`, as I only thought it's going to compile the program. Turns out, the `-nostdlib` flag in the `gcc` command had messed up the program completely.
 
 Now, I have to find a way to use `stdio.h` and `stdlib.h` in my program. Most obvious way? directly copy the content in those 2 header files into the `main.c`. But not only would that make the program too big, it would also make the program too slow (from the huge code output).
 
 It seems that we need to reinvent std libs.
 
-## -nostdlib - checkpoint Q&A
+## nostdlib - checkpoint Q&A
 
 Q - What are the placeholders?\
 A - When the source printing sector encounter `%SOURCE%`, it would replace that with the source code. And when it encounter `|`, it would replace that with the next task function.
-
 
 Q - What does the `-nostdlib` flag do? Why does it affect so much?\
 A - If you think of the basic need for this program, it would be input and output. Maybe through scanf and printf.\
 However, they are provided from `stdio.h` and `stdlib.h`. The `-nostdlib` flag basically removes all these libraries, and our program would be unable to do them through standard libraries. Which we then have to reinvent them ourselves.
 
-## reinventing stdlibs
+## Reinventing stdlibs
 
-### identifying what functions we need
+### Identifying what functions we need
 
 First of all, we need functions related to io operations.\
 Sadly because I have been writing the code following my instincts, many many different stdout methods are used, andwe kinda need lots of functions.\
@@ -676,11 +674,11 @@ which are just `strlen`, `strcspn`, and `strncmp`.
 
 These are just basic string manipulations.
 
-And we need `atoi`, since while the input is a string, sometimes it needs to be integer instead.
+And we need `atoi`, as we need to convert strings to numbers for some tasks.
 
-Just some ascii bytes convertions.
+This is just some ascii bytes convertions.
 
-### implementing the code
+### Implementing the code
 
 Apart from implementing the above said functions, I have also modified the placeholders in the source to be `@` for source and `^` for task func. They have no special meanings, choosing them is just because the symbols are not used anywhere else in the program.\
 Moreover, I forgot that it would run without the inputs for the first time, which panics my code when it defaults to is_prime for the task function. So I added `no`, a new default task function that does nothing.
@@ -982,7 +980,7 @@ int main() {
 
 Now this should compile perfectly under `-nostdlib` and run correctly for the chal.
 
-### Big oppsies
+### Big oopsies
 
 Well good news is that, this indeed runs perfectly locally. Bad news? It doesn't run on the chal server.\
 After creating a ticket and communicating with the chal author about the problem, I found out that it was my issue.\
@@ -991,19 +989,24 @@ It turns out my nsjail installation was broken, and I was testing this code loca
 After rebuilding the docker image, with an uncorrupted nsjail, the code dies, proving this code is still wrong.\
 But since it works without nsjail, I knew we are close to solving this.
 
-## reinventing stdlibs - checkpoint Q&A
+## Reinventing stdlibs - checkpoint Q&A
 
 Q - How did the nsjail corrupt?\
 A - This shouldn't be here at the Q&A but, and because, I don't know actually :sob:
+
+Q - How long did it took you to type all those functions?\
+A - idk 12 hours :skull:\
+I sat in front of my computer for 4 hours straight typing and debugging, and then I went to have a dinner break and then continue typing for another 8 hoursz
+
 
 ## One step away
 
 Now we can actually pinpoint the only barrier to be a syscall violation to nsjail.
 
 After looking around the code, the only direct syscalls are `syscall 0 (write)`, `syscall 1 (read)`, and `syscall 231 (exit_group)`.\
-These 3 syscalls are permitted by nsjail `"--seccomp_string", "ALLOW { read, write, close, execve, exit_group } DEFAULT KILL_PROCESS",`\
+These 3 syscalls are permitted by nsjail `"--seccomp_string", "ALLOW { read, write, close, execve, exit_group } DEFAULT KILL_PROCESS",`
 
-After wasting 3 hours, I found out how stupid I am.\
+After wasting 3 hours, I found out how stupid I am.
 
 In the program entry point, there is
 
@@ -1024,10 +1027,11 @@ __attribute__((naked)) void _start(void) {
 By looking, it only executes `syscall 231` and exits. However, at the end there lies `.byte 0xf, 0x0b`, which is `ud2`.\
 It is a trap instruction that would forcefully exit the program if syscall failed to exit the program, but turns out nsjail dont like it.
 
-By removing that line of code, the program can now perfectly run on the chal server. (the solve script is stored at `./sol.c`)
+By removing that line of code, the program can now perfectly run on the chal server.
 
 *Also Im deeply sorry for using a windows machine, which pasting multiline code is somehow slow, and the netcat connection just exits before the pasting complete.*\
-*Therefore I have compressed every function into a single line of code, which results into this not so readable code.*
+*Therefore I have compressed every function into a single line of code, which results into this not so readable code.*\
+*(the uncompressed solve script is in the attachments)*
 
 ```c
 typedef unsigned long long uint64_t;
@@ -1089,11 +1093,30 @@ int main() {char input[35] = {0};char next_task[15] = {0};if (!fgets(input, size
 
 and running this on the chal server gave us the
 
-### flag
+### Flag
 
 `wwf{you_are_a_quine_master_now_congratulations}`
 
 ## One step away - checkpoint Q&A
 
-Q - Why does this Q&A section seems useless?\
-A - Because I haven't thought of any questions about this part.
+Q - Why do you compress the code instead of using pwntools or file content piping?\
+A - I don't know why but when I do that, the server gave no response at all, no error, no flag, no status, nothing.\
+Since I just want to solve this chal asap, I used this kinda *unethical* method to submit the code :)
+
+## Aftermath
+
+After I get the flag, I helped my team to become the **3rd** team to solve this chal.
+
+But since I'm not a native english speaker, I don't know what is ouroboros, and what is quine.
+
+From this challenge I learned
+
+* the definition of **quine** and **ouroboros** (lol).
+* that you can use such cursed flag like **`-nostdlib`** for `gcc`. (I would remember this flag so much because it brought me **so much P A I N**.)
+* how to make **quine** programs
+* that it's **bad for your health** to stay awake until 4am and then sleep and then wake up at 6am :(
+
+## Aftermath - checkpoint Q&A
+
+Q - :moai:\
+A - I don't think you need a Q&A for aftermath lol
