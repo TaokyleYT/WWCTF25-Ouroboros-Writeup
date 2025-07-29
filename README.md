@@ -296,29 +296,29 @@ There are 5 tasks in total, each task is a function that returns a tuple with 2 
 
 They are
 
-* **reverse**
+**`reverse`**
 
-  * input a string consisting of 3 to 10 lowercase letters, output the reversed string.
+* input a string consisting of 3 to 10 lowercase letters, output the reversed string.
 
-* **sum**
+**`sum`**
 
-  * input 3 to 7 integers from 0 to 20 split with a space, output their sum
+* input 3 to 7 integers from 0 to 20 split with a space, output their sum
 
-  * *special: the input are not just the integers, the first element is how many integers are there, the following are the integers*
+* *special: the input are not just the integers, the first element is how many integers are there, the following are the integers*
 
-* **is_prime**
+**`is_prime`**
 
-  * input an integer from 2 to 100, output whether it is a prime
+* input an integer from 2 to 100, output whether it is a prime
 
-  * *special: the output need to be "True" or "False", not just 1 and 0*
+* *special: the output need to be "True" or "False", not just 1 and 0*
 
-* **fibonacci**
+**`fibonacci`**
 
-  * input an integer from 1 to 15, output the n-th fibonacci number, where n is the input
+* input an integer from 1 to 15, output the n-th fibonacci number, where n is the input
 
-* **caesar**
+**`caesar`**
 
-  * input a shift amount and a string consisting of 5 to 12 lowercase letters, output the caesar shifted cipher
+* input a shift amount and a string consisting of 5 to 12 lowercase letters, output the caesar shifted cipher
 
 There is also a task distribute function `task()`, which will **return** a random task's **name**, and the **input** and **expected output** of that task.
 
@@ -450,11 +450,11 @@ The input for the code would be the **input** for the **current** task, newline,
 
 The output of the code should be the **output** for the **current** task, newline, and then the entire c code that would run on the next task.
 
-> **Special i/o**
->
-> The **first** input that the code will receive would be **just** the task name for the next task, the current task input will be **missing** because technically that is a startup instead of a task
->
-> The **output** c code for the **last** task should be **identical** to the original c code (aka the code you pasted in the beginning)
+**Special i/o**
+
+* The **first** input that the code will receive would be **just** the task name for the next task, the current task input will be **missing** because technically that is a startup instead of a task
+
+* The **output** c code for the **last** task should be **identical** to the original c code (aka the code you pasted in the beginning)
 
 Then, if all 69 tasks are solved correctly, and the final output c code is identical to the original c code, it will print the flag.
 
