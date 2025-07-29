@@ -4,7 +4,7 @@
 
 ## Please open issue should you have any questions. It will be added to the respective Q&A section
 
-Author: Taokyle - THEM?!
+**Author: Taokyle - THEM?!**
 
 OS: this is the only chal I solved cuz other chals are either too hard for me or too easy that my teammates alr solved it before me :skull:
 
@@ -26,7 +26,7 @@ Attachments:\
 
 ## The Beginning
 
-First, since this is a docker environment, lets take a look at `Dockerfile` to see what the environment is like, and where the flag is.
+First, since this is a **docker** environment, lets take a look at `Dockerfile` to see what the environment is like, and where the flag is.
 
 ```dockerfile
 FROM python:alpine
@@ -42,24 +42,24 @@ USER user
 CMD socat -dd TCP4-LISTEN:1337,fork,reuseaddr SYSTEM:/home/user/wrapper.sh
 ```
 
-Ok it seems that there is a flag in `FLAG` env variable. Let's also take a look at what `wrapper.sh` does to find out entry point
+Ok it seems that there is a flag in `FLAG` env variable. Let's also take a look at what `wrapper.sh` does to find out the entry point
 
 ```bash
 #!/bin/sh
 python3 -u /home/user/chall.py
 ```
 
-Interesting, it just runs chall.py. Let's go analyse `chall.py`, our star in this chal
+Interesting, it just **runs chall.py**. Let's go analyze `chall.py`, our :star: in this chal
 
 ## The Beginning - checkpoint Q&A
 
 Q - What does the `-u` flag in `wrapper.sh` do? Does it affect how the script runs?\
-A - `-u` is just used to run the python script with unbuffered output, this ensures the output from the chal is printed immediately.
+A - `-u` is just used to run the python script with **unbuffered output**, this ensures the output from the chal is printed **immediately**.
 
 ## chall.py
 
 <details open>
-  <summary><b>Click to open/close the full chall.py code (also in attachment)</b></summary>
+  <summary><b>Click to open/close the full [chall.py](./chall.py) code</b></summary>
 
 ```python
 import os
@@ -296,31 +296,31 @@ There are 5 tasks in total, each task is a function that returns a tuple with 2 
 
 They are
 
-* reverse
+* **reverse**
 
   * input a string consisting of 3 to 10 lowercase letters, output the reversed string.
 
-* sum
+* **sum**
 
   * input 3 to 7 integers from 0 to 20 split with a space, output their sum
 
   * *special: the input are not just the integers, the first element is how many integers are there, the following are the integers*
 
-* is_prime
+* **is_prime**
 
   * input an integer from 2 to 100, output whether it is a prime
 
   * *special: the output need to be "True" or "False", not just 1 and 0*
 
-* fibonacci
+* **fibonacci**
 
   * input an integer from 1 to 15, output the n-th fibonacci number, where n is the input
 
-* caesar
+* **caesar**
 
   * input a shift amount and a string consisting of 5 to 12 lowercase letters, output the caesar shifted cipher
 
-There is also a task distribute function `task()`, which will return a random task's name, and the input and expected output of that task.
+There is also a task distribute function `task()`, which will **return** a random task's **name**, and the **input** and **expected output** of that task.
 
 ### The runner
 
@@ -393,11 +393,11 @@ def run_code(code, stdin):
     return out
 ```
 
-First, it checks how long the input c code is. It cannot be empty (but you can't run anything if theres no code so we ignore lol), and it cannot contain more than 99999 bytes (thats alot)
+First, it checks **how long** the input c code is. It cannot be **empty** <sub>(but you can't run anything if theres no code so we ignore lol)</sub>, and it cannot contain more than **99999 bytes** <sub>(thats alot)</sub>
 
-It then creates a directory for the job, named from the hash of the code (so that the same code used the same directory), and creates a subdirectory for the sandbox.
+It then creates a directory for the job, named from the hash of the code (so that the **same code** used the **same directory**), and creates a subdirectory for the sandbox.
 
-It writes the input c code into `main.c` in the sandbox, compiles the code using gcc, and executes it using nsjail. Finally, if the code ran successfully, it returns the output.
+It writes the input c code into `main.c` in that sandbox, **compiles** the code using **gcc**, and executes it using **nsjail**. Finally, if the code ran successfully, it returns the output.
 
 ### The entry point
 
@@ -442,19 +442,19 @@ def main():
     sys.stdout.flush()
 ```
 
-When the code runs, it first prompts us to paste in a c code (can be multilined), and submits upon us entering an empty line.
+When the code runs, it first **prompts** us to **paste** in a c code (can be multilined), and submits upon us entering an empty line.
 
-It generates 69 tasks (69 nice wwwwww), and runs the code on each task.
+It generates **69 tasks** (69 nice wwwwww), and runs the code on each task.
 
-The input for the code would be the input for the current task, newline, and then the task name for the next task (NOT the current task)
+The input for the code would be the **input** for the **current** task, newline, and then the task **name** for the **next** task (NOT the current task)
 
-The output of the code should be the output for the current task, newline, and then the entire c code that would run on the next task.
+The output of the code should be the **output** for the **current** task, newline, and then the entire c code that would run on the next task.
 
-> Special i/o
+> **Special i/o**
 >
-> The first input that the code will receive would be just the task name for the next task, the current task input will be missing because technically that is a startup instead of a task
+> The **first** input that the code will receive would be **just** the task name for the next task, the current task input will be **missing** because technically that is a startup instead of a task
 >
-> The output c code for the last task should be identical to the original c code (aka the code you pasted into the chall.py)
+> The **output** c code for the **last** task should be **identical** to the original c code (aka the code you pasted in the beginning)
 
 Then, if all 69 tasks are solved correctly, and the final output c code is identical to the original c code, it will print the flag.
 
@@ -466,11 +466,11 @@ This chal requires your code to be like an ouroboros, it survives (do tasks), an
 
 ## Initial ideas
 
-The first approach I thought of was to try a way to read and extract the FLAG env variable and output it, skipping the code.\
-However by finding all places in the chall script where message related to the code might get printed out, I found out that it can only happen either after solving all 69 tasks, or stuff it in stderr and trigger a compilation error when compiling the next code.\
-For the first exitpoint, since we've already got that far we might as well make it solve the entire challenge and get the flag from a legit print.\
+The first approach I thought of was to try a way to **read** and **extract** the **FLAG env** variable and output it, skipping the code.\
+However by finding all places in the chall script where message related to the code might get printed out, I found out that it can only happen either **after solving** all 69 tasks, **or** stuff it in **stderr** and trigger a **compilation error** when compiling the next code.\
+For the first exitpoint, since we've already got that far we might as well make it solve the entire challenge and get the flag from a legit print :smirk:.\
 For the second exitpoint, From the nsjail run script we find this argument: `"--rlimit_nofile", "1",`\
-Which means that we do not have access to stderr channel, so this is not an option.
+Which means that we do **not** have access to **stderr** channel, so this is not an option.
 
 To be honest, writing a c program which solves the challenge is easier than whatever other approaches in extracting the flag, so I headed straight to craft the skeleton of the payload.
 
@@ -503,7 +503,7 @@ int main() {
 ## Initial ideas - checkpoint Q&A
 
 Q - Did you use AI to craft the payload?\
-A - No :skull: me poor no money
+A - No :skull: me poor no money to use AI
 
 ## nostdlib
 
@@ -640,11 +640,11 @@ int main() {
 }
 ```
 
-I have made a c program that would perfectly solve the challenge.... right?
+I have made a c program that would perfectly solve the challenge.... *right*?
 
-Wrong. It spitted out some error. More specifically, `undefined reference to {function}`
+**Wrong**. It spitted out some error. More specifically, `undefined reference to {function}`
 
-It turns out that I've overlooked the `gcc` compile line in `chall.py`, as I only thought it's going to compile the program. Turns out, the `-nostdlib` flag in the `gcc` command had messed up the program completely.
+It turns out that I've overlooked the `gcc` compile line in `chall.py`, as I only thought it's going to compile the program. Turns out, the `-nostdlib` flag in the `gcc` command had **messed up** the program completely.
 
 Now, I have to find a way to use `stdio.h` and `stdlib.h` in my program. Most obvious way? directly copy the content in those 2 header files into the `main.c`. But not only would that make the program too big, it would also make the program too slow (from the huge code output).
 
@@ -656,7 +656,7 @@ Q - What are the placeholders?\
 A - When the source printing sector encounter `%SOURCE%`, it would replace that with the source code. And when it encounter `|`, it would replace that with the next task function.
 
 Q - What does the `-nostdlib` flag do? Why does it affect so much?\
-A - If you think of the basic need for this program, it would be input and output. Maybe through scanf and printf.\
+A - If you think of the basic need for this program, it would be **input** and **output**. Maybe through scanf and printf.\
 However, they are provided from `stdio.h` and `stdlib.h`. The `-nostdlib` flag basically removes all these libraries, and our program would be unable to do them through standard libraries. Which we then have to reinvent them ourselves.
 
 ## Reinventing stdlibs
@@ -664,7 +664,7 @@ However, they are provided from `stdio.h` and `stdlib.h`. The `-nostdlib` flag b
 ### Identifying what functions we need
 
 First of all, we need functions related to io operations.\
-Sadly because I have been writing the code following my instincts, many many different stdout methods are used, andwe kinda need lots of functions.\
+Sadly because I have been writing the code following my instincts, many many different stdout methods are used, and we kinda need lots of functions.\
 Such as `putchar`, `fputs`, `puts`, `printf`, and `fgets`.
 
 These can be achieved using syscall 0 and syscall 1, which is `write` and `read`, into and out of `stdout` and `stdin`.
@@ -680,7 +680,9 @@ This is just some ascii bytes convertions.
 
 ### Implementing the code
 
-Apart from implementing the above said functions, I have also modified the placeholders in the source to be `@` for source and `^` for task func. They have no special meanings, choosing them is just because the symbols are not used anywhere else in the program.\
+Apart from implementing the above said functions, I have also modified the placeholders in the source to be `@` for source and `^` for task func.\
+These two symbols have no special meanings, choosing them is just because the symbols are not used anywhere else in the program.
+
 Moreover, I forgot that it would run without the inputs for the first time, which panics my code when it defaults to is_prime for the task function. So I added `no`, a new default task function that does nothing.
 
 <details open>
@@ -736,28 +738,28 @@ static int sys_read(int fd, void *buf, unsigned int count) {
 }
 int putchar(int c) {
     char ch = (char)c;
-    if (sys_write(STDOUT_FD, &ch, 1) != 1) return -1;
+    if (sys_write(STDOUT_FD, &ch, 1) != 1) return -1; //return -1 if write fails (didnt write 1 byte to stdout)
     return c;
 }
 int fputs(const char *s) {
     size_t len = 0;
-    while (s[len]) len++;
+    while (s[len]) len++; //shouldve used strlen but I wrote this before writing strlen so
     int written = sys_write(STDOUT_FD, s, (unsigned int)len);
-    return (written == (int)len) ? (int)len : -1;
+    return (written == (int)len) ? (int)len : -1; //return -1 if write fails (didnt write the full string to stdout)
 }
 int puts(const char *s) {
-    if (fputs(s) < 0) return -1;
-    if (putchar('\n') < 0) return -1;
+    if (fputs(s) < 0) return -1; //basically fputs
+    if (putchar('\n') < 0) return -1; //plus trailing newline
     return 1;
 }
 size_t strlen(const char *s) {
     size_t len = 0;
-    while (s[len]) len++;
+    while (s[len]) len++; // increment string length until null terminator (\0) which returns false
     return len;
 }
 int strncmp(const char *a, const char *b, size_t n) {
     size_t i = 0;
-    for (; i < n; i++) {
+    for (; i < n; i++) { // dont ask me why I didnt stuff i=0 inside for loop, I was planning to use while loop lol
         unsigned char ca = (unsigned char)a[i];
         unsigned char cb = (unsigned char)b[i];
         if (ca != cb) return (int)(ca - cb);
@@ -765,12 +767,12 @@ int strncmp(const char *a, const char *b, size_t n) {
     }
     return 0;
 }
-size_t strcspn(const char *s, const char *reject) {
+size_t strcspn(const char *s, const char *reject) { // ok it should be search but I named it reject lol
     size_t i = 0;
     for (; s[i]; i++) {
         size_t j = 0;
         while (reject[j]) {
-            if (s[i] == reject[j]) return i;
+            if (s[i] == reject[j]) return i; // literally linear search
             j++;
         }
     }
@@ -779,11 +781,11 @@ size_t strcspn(const char *s, const char *reject) {
 int atoi(const char *s) {
     int sign = 1;
     int val = 0;
-    while (*s == ' ' || *s == '\t' || *s == '\n') s++;
-    if (*s == '-') { sign = -1; s++; }
-    else if (*s == '+') s++;
+    while (*s == ' ' || *s == '\t' || *s == '\n') s++; // trim heading whitespace
+    if (*s == '-') { sign = -1; s++; } // handle negative sign
+    else if (*s == '+') s++; // who even use a heading pos sign :skull:
     while (*s >= '0' && *s <= '9') {
-        val = val * 10 + (*s - '0');
+        val = val * 10 + (*s - '0'); // convert string to int, 
         s++;
     }
     return sign * val;
@@ -792,24 +794,25 @@ int fgets(char *buf, int maxlen) {
     int i = 0;
     while (i < maxlen - 1) {
         char c;
-        int r = sys_read(STDIN_FD, &c, 1);
-        if (r <= 0) break;
+        int r = sys_read(STDIN_FD, &c, 1); // read 1 byte
+        if (r <= 0) break; // break if read fails
         buf[i++] = c;
-        if (c == '\n') break;
+        if (c == '\n') break; // break if newline
     }
     if (i == 0) return 0;
     buf[i] = '\0';
     return 1;
 }
-int printf(const char *fmt, int val) {
+int printf(const char *fmt, int val) { // I really should just invent an integer printer instead of this printf ahh
     int count = 0;
     while (*fmt) {
         if (*fmt == '%') {
             fmt++;
-            if (*fmt == '%') {
+            if (*fmt == '%') { // %% -> %
                 if (putchar('%') < 0) return -1;
                 count++;
-            } else if (*fmt == 'd') {
+            } else if (*fmt == 'd') { // %d -> int
+                // basically itoa
                 char buf[20];
                 int i = 0;
                 unsigned int uval;
@@ -851,12 +854,12 @@ void print(const char *src) {
     static const char hex[] = "0123456789abcdef";
     unsigned char c;
     while ((c = (unsigned char)*src++)) {
-        if (c == '\\') fputs("\\\\");
-        else if (c == '"') fputs("\\\"");
-        else if (c == '\n') fputs("\\n");
-        else if (c == '\t') fputs("\\t");
-        else if (c >= 32 && c < 127) putchar(c);
-        else {
+        if (c == '\\') fputs("\\\\"); // if backslash, escape backslash
+        else if (c == '"') fputs("\\\""); // if double quote, escape double quote
+        else if (c == '\n') fputs("\\n"); // if newline, escape newline
+        else if (c == '\t') fputs("\\t"); // if tab, escape tab
+        else if (c >= 32 && c < 127) putchar(c); // if printable, print as is
+        else { // if not printable, print as hex
             putchar('\\');
             putchar('x');
             putchar(hex[c >> 4]);
@@ -983,10 +986,10 @@ Now this should compile perfectly under `-nostdlib` and run correctly for the ch
 ### Big oopsies
 
 Well good news is that, this indeed runs perfectly locally. Bad news? It doesn't run on the chal server.\
-After creating a ticket and communicating with the chal author about the problem, I found out that it was my issue.\
-It turns out my nsjail installation was broken, and I was testing this code locally without nsjail.\
+After creating a ticket and communicating with the chal author about the problem, I found out that it was my <sub>skill</sub> issue.\
+It turns out my nsjail installation was broken, and I was testing this code locally without nsjail :flushed:.\
 
-After rebuilding the docker image, with an uncorrupted nsjail, the code dies, proving this code is still wrong.\
+After rebuilding the docker image, with an uncorrupted nsjail, the code dies, proving this code is still **wrong**.\
 But since it works without nsjail, I knew we are close to solving this.
 
 ## Reinventing stdlibs - checkpoint Q&A
@@ -996,17 +999,17 @@ A - This shouldn't be here at the Q&A but, and because, I don't know actually :s
 
 Q - How long did it took you to type all those functions?\
 A - idk 12 hours :skull:\
-I sat in front of my computer for 4 hours straight typing and debugging, and then I went to have a dinner break and then continue typing for another 8 hoursz
-
+I sat in front of my computer for 4 hours straight coding and debugging, and then I went to have a dinner break and then continue coding for another 8 hours\
+*Absolute ~~Cinema~~ Pain*
 
 ## One step away
 
-Now we can actually pinpoint the only barrier to be a syscall violation to nsjail.
+Now we can actually pinpoint the only barrier to be a **syscall violation** to nsjail.
 
 After looking around the code, the only direct syscalls are `syscall 0 (write)`, `syscall 1 (read)`, and `syscall 231 (exit_group)`.\
 These 3 syscalls are permitted by nsjail `"--seccomp_string", "ALLOW { read, write, close, execve, exit_group } DEFAULT KILL_PROCESS",`
 
-After wasting 3 hours, I found out how stupid I am.
+After wasting 3 hours :skull:, I found out how :clown: I am.
 
 In the program entry point, there is
 
@@ -1025,13 +1028,13 @@ __attribute__((naked)) void _start(void) {
 ```
 
 By looking, it only executes `syscall 231` and exits. However, at the end there lies `.byte 0xf, 0x0b`, which is `ud2`.\
-It is a trap instruction that would forcefully exit the program if syscall failed to exit the program, but turns out nsjail dont like it.
+It is a **trap instruction** that would forcefully exit the program if syscall failed to exit the program, but turns out nsjail dont like it.
 
 By removing that line of code, the program can now perfectly run on the chal server.
 
 *Also Im deeply sorry for using a windows machine, which pasting multiline code is somehow slow, and the netcat connection just exits before the pasting complete.*\
 *Therefore I have compressed every function into a single line of code, which results into this not so readable code.*\
-*(the uncompressed solve script is in the attachments)*
+*(the uncompressed solve script is [here](./sol.c))*
 
 ```c
 typedef unsigned long long uint64_t;
@@ -1100,8 +1103,9 @@ and running this on the chal server gave us the
 ## One step away - checkpoint Q&A
 
 Q - Why do you compress the code instead of using pwntools or file content piping?\
-A - I don't know why but when I do that, the server gave no response at all, no error, no flag, no status, nothing.\
-Since I just want to solve this chal asap, I used this kinda *unethical* method to submit the code :)
+A - I don't know why but when I do that, the server gave **no response** at all, no error, no flag, no status, nothing.\
+Since I just want to solve this chal asap, I used this kinda *unethical* method to submit the code :)\
+And hey, you can still have the non-compressed and also working [solve script](./sol.c)
 
 ## Aftermath
 
@@ -1114,9 +1118,10 @@ From this challenge I learned
 * the definition of **quine** and **ouroboros** (lol).
 * that you can use such cursed flag like **`-nostdlib`** for `gcc`. (I would remember this flag so much because it brought me **so much P A I N**.)
 * how to make **quine** programs
-* that it's **bad for your health** to stay awake until 4am and then sleep and then wake up at 6am :(
+* that it's **bad for your health** to stay awake until 4am and then sleep and then wake up at 6am :sad:
+* What is and how to use **`nsjail`**
 
 ## Aftermath - checkpoint Q&A
 
-Q - :moai:\
+Q - :moyai:\
 A - I don't think you need a Q&A for aftermath lol

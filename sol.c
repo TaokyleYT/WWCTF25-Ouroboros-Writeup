@@ -10,7 +10,7 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "#define STDOUT_FD 1\n"
 "const char *source = \"@\";\n"
 "__attribute__((naked)) void _start(void) {\n"
-"    __asm__ volatile (\n"
+"    __asm__ volatile(\n"
 "        \"mov $0, %rdi\\n\"\n"
 "        \"mov $0, %rsi\\n\"\n"
 "        \"call main\\n\"\n"
@@ -19,9 +19,10 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "        \"syscall\"\n"
 "    );\n"
 "}\n"
-"static int sys_write(int fd, const void *buf, unsigned int count) {\n"
+"static int sys_write(int fd,\n"
+"    const void *buf, unsigned int count) {\n"
 "    int ret;\n"
-"    __asm__ volatile (\n"
+"    __asm__ volatile(\n"
 "        \"mov $1, %%rax\\n\"\n"
 "        \"mov %1, %%rdi\\n\"\n"
 "        \"mov %2, %%rsi\\n\"\n"
@@ -29,14 +30,14 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "        \"syscall\\n\"\n"
 "        \"mov %%eax, %0\\n\"\n"
 "        : \"=r\"(ret)\n"
-"        : \"r\"((uint64_t)fd), \"r\"(buf), \"r\"((uint64_t)count)\n"
+"        : \"r\"((uint64_t) fd), \"r\"(buf), \"r\"((uint64_t) count)\n"
 "        : \"rax\", \"rdi\", \"rsi\", \"rdx\"\n"
 "    );\n"
 "    return ret;\n"
 "}\n"
 "static int sys_read(int fd, void *buf, unsigned int count) {\n"
 "    int ret;\n"
-"    __asm__ volatile (\n"
+"    __asm__ volatile(\n"
 "        \"mov $0, %%rax\\n\"\n"
 "        \"mov %1, %%rdi\\n\"\n"
 "        \"mov %2, %%rsi\\n\"\n"
@@ -44,21 +45,21 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "        \"syscall\\n\"\n"
 "        \"mov %%eax, %0\\n\"\n"
 "        : \"=r\"(ret)\n"
-"        : \"r\"((uint64_t)fd), \"r\"(buf), \"r\"((uint64_t)count)\n"
+"        : \"r\"((uint64_t) fd), \"r\"(buf), \"r\"((uint64_t) count)\n"
 "        : \"rax\", \"rdi\", \"rsi\", \"rdx\"\n"
 "    );\n"
 "    return ret;\n"
 "}\n"
 "int putchar(int c) {\n"
-"    char ch = (char)c;\n"
-"    if (sys_write(STDOUT_FD, &ch, 1) != 1) return -1;\n"
+"    char ch = (char) c;\n"
+"    if (sys_write(STDOUT_FD, & ch, 1) != 1) return -1;\n"
 "    return c;\n"
 "}\n"
 "int fputs(const char *s) {\n"
 "    size_t len = 0;\n"
 "    while (s[len]) len++;\n"
-"    int written = sys_write(STDOUT_FD, s, (unsigned int)len);\n"
-"    return (written == (int)len) ? (int)len : -1;\n"
+"    int written = sys_write(STDOUT_FD, s, (unsigned int) len);\n"
+"    return (written == (int) len) ? (int) len : -1;\n"
 "}\n"
 "int puts(const char *s) {\n"
 "    if (fputs(s) < 0) return -1;\n"
@@ -73,8 +74,8 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "int strncmp(const char *a, const char *b, size_t n) {\n"
 "    size_t i = 0;\n"
 "    for (; i < n; i++) {\n"
-"        unsigned char ca = (unsigned char)a[i];\n"
-"        unsigned char cb = (unsigned char)b[i];\n"
+"        unsigned char ca = (unsigned char) a[i];\n"
+"        unsigned char cb = (unsigned char) b[i];\n"
 "        if (ca != cb) return (int)(ca - cb);\n"
 "        if (ca == 0) return 0;\n"
 "    }\n"
@@ -95,8 +96,10 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "    int sign = 1;\n"
 "    int val = 0;\n"
 "    while (*s == ' ' || *s == '\\t' || *s == '\\n') s++;\n"
-"    if (*s == '-') { sign = -1; s++; }\n"
-"    else if (*s == '+') s++;\n"
+"    if (*s == '-') {\n"
+"        sign = -1;\n"
+"        s++;\n"
+"    } else if (*s == '+') s++;\n"
 "    while (*s >= '0' && *s <= '9') {\n"
 "        val = val * 10 + (*s - '0');\n"
 "        s++;\n"
@@ -107,7 +110,7 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "    int i = 0;\n"
 "    while (i < maxlen - 1) {\n"
 "        char c;\n"
-"        int r = sys_read(STDIN_FD, &c, 1);\n"
+"        int r = sys_read(STDIN_FD, & c, 1);\n"
 "        if (r <= 0) break;\n"
 "        buf[i++] = c;\n"
 "        if (c == '\\n') break;\n"
@@ -136,7 +139,7 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "                        negative = 1;\n"
 "                        uval = (unsigned int)(-val);\n"
 "                    } else {\n"
-"                        uval = (unsigned int)val;\n"
+"                        uval = (unsigned int) val;\n"
 "                    }\n"
 "                    while (uval) {\n"
 "                        buf[i++] = '0' + (uval % 10);\n"
@@ -168,7 +171,7 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "    while ((c = (unsigned char)*src++)) {\n"
 "        if (c == '\\\\') fputs(\"\\\\\\\\\");\n"
 "        else if (c == '\"') fputs(\"\\\\\\\"\");\n"
-"        else if (c == '\\n') fputs(\"\\\\n\");\n"
+"        else if (c == '\\n') fputs(\"\\\\n\\\"\\n\\\"\");\n"
 "        else if (c == '\\t') fputs(\"\\\\t\");\n"
 "        else if (c >= 32 && c < 127) putchar(c);\n"
 "        else {\n"
@@ -226,9 +229,14 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "    }\n"
 "    printf(\"%d\\n\", sum);\n"
 "}\n"
-"size_t strlen_wrapper(const char *s) {return strlen(s);}\n"
+"void no(const char *input) {\n"
+"    puts(\"\");\n"
+"};\n"
+"size_t strlen_wrapper(const char *s) {\n"
+"    return strlen(s);\n"
+"}\n"
 "void reverse(const char *input) {\n"
-"    int len = (int)strlen_wrapper(input);\n"
+"    int len = (int) strlen_wrapper(input);\n"
 "    for (int i = len - 1; i >= 0; i--) putchar(input[i]);\n"
 "    putchar('\\n');\n"
 "}\n"
@@ -250,7 +258,9 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "    }\n"
 "    putchar('\\n');\n"
 "}\n"
-"size_t strcspn_wrapper(const char *s, const char *reject) {return strcspn(s, reject);}\n"
+"size_t strcspn_wrapper(const char *s, const char *reject) {\n"
+"    return strcspn(s, reject);\n"
+"}\n"
 "int main() {\n"
 "    char input[35] = {0};\n"
 "    char next_task[15] = {0};\n"
@@ -275,7 +285,11 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "            p++;\n"
 "        } else if (*p == '^' && up == 0) {\n"
 "            up++;\n"
-"            if (strncmp(next_task, \"is_prime\", 8) == 0 || strncmp(next_task, \"fibonacci\", 9) == 0 || strncmp(next_task, \"sum\", 3) == 0 || strncmp(next_task, \"reverse\", 7) == 0 || strncmp(next_task, \"caesar\", 6) == 0) {\n"
+"            if (strncmp(next_task, \"is_prime\", 8) == 0 || \n"
+"                strncmp(next_task, \"fibonacci\", 9) == 0 || \n"
+"                strncmp(next_task, \"sum\", 3) == 0 || \n"
+"                strncmp(next_task, \"reverse\", 7) == 0 || \n"
+"                strncmp(next_task, \"caesar\", 6) == 0) {\n"
 "                fputs(next_task);\n"
 "            } else {\n"
 "                fputs(\"no\");\n"
@@ -288,7 +302,7 @@ const char *source = "typedef unsigned long long uint64_t;\n"
 "    return 0;\n"
 "}";
 __attribute__((naked)) void _start(void) {
-    __asm__ volatile (
+    __asm__ volatile(
         "mov $0, %rdi\n"
         "mov $0, %rsi\n"
         "call main\n"
@@ -297,9 +311,10 @@ __attribute__((naked)) void _start(void) {
         "syscall"
     );
 }
-static int sys_write(int fd, const void *buf, unsigned int count) {
+static int sys_write(int fd,
+    const void *buf, unsigned int count) {
     int ret;
-    __asm__ volatile (
+    __asm__ volatile(
         "mov $1, %%rax\n"
         "mov %1, %%rdi\n"
         "mov %2, %%rsi\n"
@@ -307,14 +322,14 @@ static int sys_write(int fd, const void *buf, unsigned int count) {
         "syscall\n"
         "mov %%eax, %0\n"
         : "=r"(ret)
-        : "r"((uint64_t)fd), "r"(buf), "r"((uint64_t)count)
+        : "r"((uint64_t) fd), "r"(buf), "r"((uint64_t) count)
         : "rax", "rdi", "rsi", "rdx"
     );
     return ret;
 }
 static int sys_read(int fd, void *buf, unsigned int count) {
     int ret;
-    __asm__ volatile (
+    __asm__ volatile(
         "mov $0, %%rax\n"
         "mov %1, %%rdi\n"
         "mov %2, %%rsi\n"
@@ -322,21 +337,21 @@ static int sys_read(int fd, void *buf, unsigned int count) {
         "syscall\n"
         "mov %%eax, %0\n"
         : "=r"(ret)
-        : "r"((uint64_t)fd), "r"(buf), "r"((uint64_t)count)
+        : "r"((uint64_t) fd), "r"(buf), "r"((uint64_t) count)
         : "rax", "rdi", "rsi", "rdx"
     );
     return ret;
 }
 int putchar(int c) {
-    char ch = (char)c;
-    if (sys_write(STDOUT_FD, &ch, 1) != 1) return -1;
+    char ch = (char) c;
+    if (sys_write(STDOUT_FD, & ch, 1) != 1) return -1;
     return c;
 }
 int fputs(const char *s) {
     size_t len = 0;
     while (s[len]) len++;
-    int written = sys_write(STDOUT_FD, s, (unsigned int)len);
-    return (written == (int)len) ? (int)len : -1;
+    int written = sys_write(STDOUT_FD, s, (unsigned int) len);
+    return (written == (int) len) ? (int) len : -1;
 }
 int puts(const char *s) {
     if (fputs(s) < 0) return -1;
@@ -351,8 +366,8 @@ size_t strlen(const char *s) {
 int strncmp(const char *a, const char *b, size_t n) {
     size_t i = 0;
     for (; i < n; i++) {
-        unsigned char ca = (unsigned char)a[i];
-        unsigned char cb = (unsigned char)b[i];
+        unsigned char ca = (unsigned char) a[i];
+        unsigned char cb = (unsigned char) b[i];
         if (ca != cb) return (int)(ca - cb);
         if (ca == 0) return 0;
     }
@@ -373,8 +388,10 @@ int atoi(const char *s) {
     int sign = 1;
     int val = 0;
     while (*s == ' ' || *s == '\t' || *s == '\n') s++;
-    if (*s == '-') { sign = -1; s++; }
-    else if (*s == '+') s++;
+    if (*s == '-') {
+        sign = -1;
+        s++;
+    } else if (*s == '+') s++;
     while (*s >= '0' && *s <= '9') {
         val = val * 10 + (*s - '0');
         s++;
@@ -385,7 +402,7 @@ int fgets(char *buf, int maxlen) {
     int i = 0;
     while (i < maxlen - 1) {
         char c;
-        int r = sys_read(STDIN_FD, &c, 1);
+        int r = sys_read(STDIN_FD, & c, 1);
         if (r <= 0) break;
         buf[i++] = c;
         if (c == '\n') break;
@@ -414,7 +431,7 @@ int printf(const char *fmt, int val) {
                         negative = 1;
                         uval = (unsigned int)(-val);
                     } else {
-                        uval = (unsigned int)val;
+                        uval = (unsigned int) val;
                     }
                     while (uval) {
                         buf[i++] = '0' + (uval % 10);
@@ -446,7 +463,7 @@ void print(const char *src) {
     while ((c = (unsigned char)*src++)) {
         if (c == '\\') fputs("\\\\");
         else if (c == '"') fputs("\\\"");
-        else if (c == '\n') fputs("\\n");
+        else if (c == '\n') fputs("\\n\"\n\"");
         else if (c == '\t') fputs("\\t");
         else if (c >= 32 && c < 127) putchar(c);
         else {
@@ -504,9 +521,14 @@ void sum(const char *input) {
     }
     printf("%d\n", sum);
 }
-size_t strlen_wrapper(const char *s) {return strlen(s);}
+void no(const char *input) {
+    puts("");
+};
+size_t strlen_wrapper(const char *s) {
+    return strlen(s);
+}
 void reverse(const char *input) {
-    int len = (int)strlen_wrapper(input);
+    int len = (int) strlen_wrapper(input);
     for (int i = len - 1; i >= 0; i--) putchar(input[i]);
     putchar('\n');
 }
@@ -528,7 +550,9 @@ void caesar(const char *input) {
     }
     putchar('\n');
 }
-size_t strcspn_wrapper(const char *s, const char *reject) {return strcspn(s, reject);}
+size_t strcspn_wrapper(const char *s, const char *reject) {
+    return strcspn(s, reject);
+}
 int main() {
     char input[35] = {0};
     char next_task[15] = {0};
@@ -553,7 +577,11 @@ int main() {
             p++;
         } else if (*p == '^' && up == 0) {
             up++;
-            if (strncmp(next_task, "is_prime", 8) == 0 || strncmp(next_task, "fibonacci", 9) == 0 || strncmp(next_task, "sum", 3) == 0 || strncmp(next_task, "reverse", 7) == 0 || strncmp(next_task, "caesar", 6) == 0) {
+            if (strncmp(next_task, "is_prime", 8) == 0 || 
+                strncmp(next_task, "fibonacci", 9) == 0 || 
+                strncmp(next_task, "sum", 3) == 0 || 
+                strncmp(next_task, "reverse", 7) == 0 || 
+                strncmp(next_task, "caesar", 6) == 0) {
                 fputs(next_task);
             } else {
                 fputs("no");
