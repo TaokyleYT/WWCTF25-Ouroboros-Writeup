@@ -1009,7 +1009,7 @@ Now we can actually pinpoint the only barrier to be a **syscall violation** to n
 After looking around the code, the only direct syscalls are `syscall 0 (write)`, `syscall 1 (read)`, and `syscall 231 (exit_group)`.\
 These 3 syscalls are permitted by nsjail `"--seccomp_string", "ALLOW { read, write, close, execve, exit_group } DEFAULT KILL_PROCESS",`
 
-After wasting 3 hours :skull:, I found out how :clown: I am.
+After wasting 3 hours :skull:, I found out how :clown_face: I am.
 
 In the program entry point, there is
 
