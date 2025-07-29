@@ -59,7 +59,7 @@ A - `-u` is just used to run the python script with **unbuffered output**, this 
 ## chall.py
 
 <details open>
-  <summary><b>Click to open/close the full [chall.py](./chall.py) code</b></summary>
+  <summary><b>Click to open/close the full <a href="./chall.py">chall.py</a> code</b></summary>
 
 ```python
 import os
@@ -987,7 +987,7 @@ Now this should compile perfectly under `-nostdlib` and run correctly for the ch
 
 Well good news is that, this indeed runs perfectly locally. Bad news? It doesn't run on the chal server.\
 After creating a ticket and communicating with the chal author about the problem, I found out that it was my <sub>skill</sub> issue.\
-It turns out my nsjail installation was broken, and I was testing this code locally without nsjail :flushed:.\
+It turns out my nsjail installation was broken, and I was testing this code locally without nsjail :flushed:.
 
 After rebuilding the docker image, with an uncorrupted nsjail, the code dies, proving this code is still **wrong**.\
 But since it works without nsjail, I knew we are close to solving this.
@@ -995,7 +995,7 @@ But since it works without nsjail, I knew we are close to solving this.
 ## Reinventing stdlibs - checkpoint Q&A
 
 Q - How did the nsjail corrupt?\
-A - This shouldn't be here at the Q&A but, and because, I don't know actually :sob:
+A - This shouldn't be here at the Q&A but, and because, I don't know actually :sob: maybe it's bc of my super bad and fluctuating internet?
 
 Q - How long did it took you to type all those functions?\
 A - idk 12 hours :skull:\
