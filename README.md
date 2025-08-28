@@ -4,7 +4,7 @@
 
 ## Please open issue should you have any questions. It will be added to the respective Q&A section
 
-**Author: Taokyle - THEM?!**
+**Author: Taokyle**
 
 OS: this is the only chal I solved cuz other chals are either too hard for me or too easy that my teammates alr solved it before me :skull:
 
